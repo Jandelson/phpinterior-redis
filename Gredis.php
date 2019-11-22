@@ -12,8 +12,6 @@
  * https://github.com/phpredis/phpredis
  *
  */ 
-namespace GeWeb;
-
 class Gredis
 {
     private $ip;
@@ -46,20 +44,14 @@ class Gredis
         }
     }
     
-    public function connect()
+    private function connect()
     {
         try {
             return @$this->redis->connect($this->ip, $this->port, 2.5, null, 150);
         } catch (\Exception $e) {
             return null;
         }
-    }
-
-    public function getConnection()
-    {
-        return $this->redis;
-    }
-    
+    }    
     /*
      * rediskey Cria chave com o valor informado para montar a chave para o redis
     */
@@ -118,9 +110,19 @@ class Gredis
         }
     }
     
-    public function likeKey($tabela)
+    private function likeKey($tabela)
     {
         return $this->redis->keys('*' . $tabela . '*');
+    }
+    
+    private function deleteValue($key)
+    {
+        $key = $this->rediskey($key);
+        try {
+            $this->redis->del($key);
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
     }
     
     /*
